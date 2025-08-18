@@ -1,0 +1,24 @@
+<odoo>
+<menuitem id="menu_lots_serial" 
+          name="Warranty "
+          parent="helpdesk.menu_helpdesk_root"
+          sequence="12"
+          action="stock.action_production_lot_form"/>
+
+
+<menuitem id="menu_products_root" 
+          name="Products"
+          parent="helpdesk.menu_helpdesk_root"
+          sequence="11"
+          action="stock.product_template_action_product"/>      
+<menuitem id="menu_customers_root" 
+          name="Customers"
+          parent="helpdesk.menu_helpdesk_root"
+          sequence="13"
+          action="contacts.action_contacts"/>        
+<menuitem id="menu_field_service_root" 
+          name="Field Service"
+          parent="helpdesk.menu_helpdesk_root"
+          sequence="13"
+          action="contacts.action_contacts"/>             
+</odoo>

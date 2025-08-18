@@ -6,12 +6,16 @@
     "author": "ManojThombare",
     "license": "LGPL-3",
     "depends": [
+        "base",
         "helpdesk",
         "stock",             
         "mail",              
     ],
     "data": [
+        
         "data/mail_template.xml",
+        "data/automated_actions.xml",
+        "views/menus.xml",
         "views/stock_production_lot_view.xml",
         "views/product_template_view.xml",
         "views/helpdesk_team_views.xml",

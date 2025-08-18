@@ -1,45 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<odoo noupdate="1">
-    <record id="mail_template_helpdesk_ticket_created" model="mail.template">
-        <field name="name">Helpdesk Ticket Created</field>
+<odoo>
+ 
+
+        <record id="mail_template_helpdesk_ticket_created" model="mail.template">
+            <field name="name">Helpdesk Ticket Created</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">Ticket {{object.name}} Created</field>
+            <field name="email_from">{{user.email}}</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="body_html" type="html">
+               
+                <div>
+                    <p>Hello {{object.partner_id.name}},</p>
+                    <p>Your ticket <b>{{object.name}}</b> has been created successfully.</p>
+                    <p>Product: {{object.product_id.display_name}}</p>
+                    <p>Serial: {{object.serial_number}}</p>
+                    <p>Warranty End Date: {{object.warranty_end_date}}</p>
+                    <p>We will contact you soon.</p>
+                    <br/>
+                    <p>Thanks,<br/>Support Team</p>
+                </div>
+              
+            </field>
+        </record>
+
+        <record id="email_template_service_ticket_stage_changed" model="mail.template">
+            <field name="name">Service Ticket Stage Changed</field>
+            <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+            <field name="subject">Service Ticket {{object.name}} Status Update</field>
+            <field name="email_from">{{user.email}}</field>
+            <field name="email_to">{{object.partner_id.email}}</field>
+            <field name="body_html" type="html">
+              
+                <div>
+                    <p>Dear {{object.partner_id.name}},</p>
+                    <p>The status of your service ticket has been updated:</p>
+                    <ul>
+                        <li>Ticket Number: <strong>{{object.name}}</strong></li>
+                        <li>New Status: <strong>{{object.stage_id.name}}</strong></li>
+                    </ul>
+                    <p>If you have any questions, please don't hesitate to contact us.</p>
+                    <p>Thank you,</p>
+                    <p>{{object.team_id.name}}</p>
+                </div>
+              
+            </field>
+        </record>
+
+        <!-- SLA Reminder Template -->
+    <record id="mail_template_sla_reminder" model="mail.template">
+        <field name="name">SLA Reminder - Helpdesk Ticket</field>
         <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
-        <field name="subject">Ticket ${object.name} Created</field>
-        <field name="email_from">{{ user.email}}</field>
+        <field name="subject">Reminder: Ticket {{object.name}} SLA Deadline Approaching</field>
+        <field name="email_from">{{user.email}}</field>
         <field name="email_to">{{object.partner_id.email}}</field>
         <field name="body_html" type="html">
-            <div>
-            <p>Hello ${object.partner_id.name},</p>
-            <p>Your ticket <b>${object.name}</b> has been created successfully.</p>
-            <p>Product: ${object.product_id.display_name}</p>
-            <p>Serial: ${object.serial_number}</p>
-            <p>Warranty End Date: ${object.warranty_end_date}</p>
-            <p>We will contact you soon.</p>
-            <br/>
-            <p>Thanks,<br/>Support Team</p>
-            </div>
+        <div>
+            <p>Hello {{object.user_id.name or 'Team'}},</p>
+            <p>The ticket <b>{{object.name}}</b> with priority <b>{{object.priority}}</b> is nearing its SLA deadline (<b>{{object.sla_deadline}}</b>).</p>
+            <p>Please take immediate action.</p>
+            <p>Customer: {{object.partner_id.name}}</p>
+            <p><a href="{{object.get_portal_url()}}">View Ticket</a></p>
+        </div>
+        
         </field>
     </record>
 
-        <record id="email_template_service_ticket_stage_changed" model="mail.template">
-        <field name="name">Service Ticket Stage Changed</field>
-        <field name="model_id" ref="model_service_ticket"/>
-        <field name="email_from">${object.team_id.email|safe}</field>
-        <field name="email_to">${object.email_cc|safe}, ${object.assigned_engineer_id.email|safe}</field>
-        <field name="partner_to">${object.partner_id.id},${object.assigned_engineer_id.partner_id.id}</field>
-        <field name="subject">Service Ticket ${object.name} Status Update</field>
-        <field name="body_html">
-        <div>
-            <p>Dear ${object.partner_id.name},</p>
-            <p>The status of your service ticket has been updated:</p>
-            <ul>
-                <li>Ticket Number: <strong>${object.name}</strong></li>
-                <li>New Status: <strong>${object.stage_id.name}</strong></li>
-                <!-- <li>Assigned Engineer: <strong>${object.assigned_engineer_id.name or 'Not yet assigned'}</strong></li> -->
-            </ul>
-            <p>If you have any questions, please don't hesitate to contact us.</p>
-            <p>Thank you,</p>
-            <p>${object.team_id.name}</p>
-            </div>
+    <!-- SLA Escalation Template -->
+    <record id="mail_template_sla_escalation" model="mail.template">
+        <field name="name">SLA Escalation - Helpdesk Ticket</field>
+        <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
+        <field name="subject">Escalation: Ticket {{object.name}} SLA Breached</field>
+        <field name="email_from">{{user.email}}</field>
+        <field name="email_to">{{object.partner_id.email}}</field>
+        <field name="body_html" type="html">
+          <div>
+            <p>Dear Senior Manager,</p>
+            <p>The ticket <b>{{object.name}}</b> with priority <b>{{object.priority}}</b> has breached its SLA deadline (<b>{{object.sla_deadline}}</b>).</p>
+            <p>Please intervene immediately.</p>
+            <p>Customer: {{object.partner_id.name}}</p>
+            <p><a href="{{object.get_portal_url()}}">View Ticket</a></p>
+           </div>
         </field>
     </record>
+
+
 </odoo>
