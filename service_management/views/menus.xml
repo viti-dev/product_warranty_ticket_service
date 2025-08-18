@@ -16,9 +16,5 @@
           parent="helpdesk.menu_helpdesk_root"
           sequence="13"
           action="contacts.action_contacts"/>        
-<menuitem id="menu_field_service_root" 
-          name="Field Service"
-          parent="helpdesk.menu_helpdesk_root"
-          sequence="13"
-          action="contacts.action_contacts"/>             
+           
 </odoo>
