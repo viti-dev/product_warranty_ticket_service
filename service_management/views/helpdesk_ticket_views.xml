@@ -1,0 +1,47 @@
+<odoo>
+    <record id="view_helpdesk_ticket_form_inherit_serial" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.serial</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+
+             <xpath expr="//field[@name='user_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        
+            <xpath expr="//field[@name='tag_ids']" position="replace"/>
+            <xpath expr="//page[@name='description']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='user_id']" position="after">
+                <field name="serial_number" options="{'no_create': True, 'no_create_edit': True}"/>
+
+                <field name="product_id" />
+                <field name="product_description" />
+            </xpath>
+         
+      <xpath expr="//sheet/notebook" position="inside">
+                <page string="Warranty">
+                    <group>
+                        <field name="warranty_period" />
+                        <field name="warranty_start_date"/>
+                        <field name="warranty_end_date"/>
+                    </group>
+                </page>
+            </xpath>
+
+      <!-- Add buttons in header -->
+      <!-- <xpath expr="//header" position="inside">
+        <button name="action_create_fsm_order" type="object" string="Create Service Order" class="oe_highlight"/>
+        <button name="action_open_fsm_orders" type="object" string="Open Service Orders"/>
+      </xpath> -->
+       <!-- Smart button for FSM orders -->
+      <!-- <xpath expr="//sheet//div[@class='oe_button_box']" position="inside">
+        <button type="object" class="oe_stat_button" name="action_open_fsm_orders" icon="fa-wrench">
+          <field name="fsm_order_count" widget="statinfo" string="Service Orders"/>
+        </button>
+      </xpath> -->
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,28 @@
+
+<odoo>
+  <record id="view_fsm_order_form_inherit_service_flow" model="ir.ui.view">
+    <field name="name">fsm.order.form.inherit.service.flow</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.view_task_form2"/>
+    <field name="arch" type="xml">
+      <xpath expr="//header" position="inside">
+        <button name="action_start_service" type="object" string="Start Service" class="oe_highlight"/>
+        <button name="action_generate_video_call" type="object" string="Create Video Call"/>
+      </xpath>
+      <xpath expr="//sheet/group" position="inside">
+        <group string="Helpdesk">
+          <field name="ticket_id" options="{'no_create': True, 'no_create_edit': True}"/>
+        </group>
+        <group string="Onsite Check-in">
+          <field name="start_service_time" readonly="1"/>
+          <field name="start_latitude" readonly="1"/>
+          <field name="start_longitude" readonly="1"/>
+        </group>
+        <group string="Remote Support">
+          <field name="video_call_url" widget="url"/>
+        </group>
+      </xpath>
+      
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,17 @@
+<!-- helpdesk_service_flow/views/helpdesk_team_views.xml -->
+<odoo>
+  <record id="view_helpdesk_team_form_inherit_service_flow" model="ir.ui.view">
+    <field name="name">helpdesk.team.form.inherit.service.flow</field>
+    <field name="model">helpdesk.team</field>
+    <field name="inherit_id" ref="helpdesk.helpdesk_team_view_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//sheet" position="inside">
+        <group string="Service Flow Settings">
+          <field name="reminder_hours_before_breach"/>
+          <field name="senior_manager_partner_id"/>
+          <field name="notify_management_partner_ids" widget="many2many_tags"/>
+        </group>
+      </xpath>
+    </field>
+  </record>
+</odoo>
