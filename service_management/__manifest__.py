@@ -11,6 +11,7 @@
         "stock",             
         "mail", 
         "project",
+        "contacts",
     ],
     "data": [
         
