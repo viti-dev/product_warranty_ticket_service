@@ -9,7 +9,8 @@
         "base",
         "helpdesk",
         "stock",             
-        "mail",              
+        "mail", 
+        "project",
     ],
     "data": [
         
