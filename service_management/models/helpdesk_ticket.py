@@ -48,11 +48,6 @@ class HelpdeskTicket(models.Model):
         lot = self.env["stock.lot"].search([("name", "=", serial_number)], limit=1)
         if not lot:
             raise UserError(_("Invalid Serial Number entered. Please check again."))
-
-        # Restrict: user can only create ticket for his own product
-        if lot.customer_id and self.env.user.partner_id != lot.customer_id:
-            raise UserError(_("You cannot create a ticket for another customer's product."))
-
         return {
             "lot_id": lot.id,
             "product_id": lot.product_id.id,
