@@ -116,4 +116,29 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             template.send_mail(ticket.id, force_send=True)
 
+class CreateTaskInherit(models.TransientModel):
+    _inherit = 'helpdesk.create.fsm.task'
+
+    def action_generate_and_view_task(self):
+        self.ensure_one()
+        new_task = self.action_generate_task()
+
+        # Explicitly set helpdesk_ticket_id on task (if not already set)
+        if self.helpdesk_ticket_id and not new_task.helpdesk_ticket_id:
+            new_task.helpdesk_ticket_id = self.helpdesk_ticket_id.id
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Tasks from Tickets'),
+            'res_model': 'project.task',
+            'res_id': new_task.id,
+            'view_mode': 'form',
+            'view_id': self.env.ref('project.view_task_form2').id,
+            'context': {
+                'fsm_mode': True,
+                'create': False,
+                'default_helpdesk_ticket_id': self.helpdesk_ticket_id.id,  # ensure ticket prefilled if duplicate task
+            }
+        }
+
 
