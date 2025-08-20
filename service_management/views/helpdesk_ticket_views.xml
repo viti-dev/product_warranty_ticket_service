@@ -16,19 +16,22 @@
 
             <xpath expr="//field[@name='user_id']" position="after">
                 <field name="serial_number" options="{'no_create': True, 'no_create_edit': True}"/>
-                <field name="product_id" />
-                <field name="product_description" />
+                <field name="product_id" readonly="1"/>
+                <field name="product_description" readonly="1"/>
             </xpath>
          
       <xpath expr="//sheet/notebook" position="inside">
                 <page string="Warranty">
                     <group>
-                        <field name="warranty_period" />
-                        <field name="warranty_start_date"/>
-                        <field name="warranty_end_date"/>
+                        <field name="warranty_period" readonly="1"/>
+                        <field name="warranty_start_date" readonly="1"/>
+                        <field name="warranty_end_date" readonly="1"/>
                     </group>
                 </page>
             </xpath>
+            <field name="partner_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
 
       <!-- Add buttons in header -->
       <!-- <xpath expr="//header" position="inside">
