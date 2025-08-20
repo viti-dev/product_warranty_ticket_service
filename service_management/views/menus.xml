@@ -4,13 +4,7 @@
           name="Products"
           parent="helpdesk.menu_helpdesk_root"
           sequence="11"
-          /> 
-<menuitem id="menu_lots_serial_menu1" 
-          name="Warranty "
-          parent="service_management.menu_products_root"
-          sequence="1"
-          action="stock.action_production_lot_form"/>
-
+          />
 
 <menuitem id="menu_products_menu2" 
           name="Products"
@@ -19,7 +13,7 @@
           action="stock.product_template_action_product"/> 
 
 <menuitem id="menu_mrp_lot_traceability"
-          name="Lots/Serial Numbers"
+          name="Product Warranty/SR. No"
           parent="service_management.menu_products_root"
           action="stock.action_production_lot_form"
           sequence="0"/>   
