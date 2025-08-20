@@ -18,7 +18,7 @@
             </xpath>
                 
 
-            <xpath expr="//field[@name='user_id']" position="after">
+            <xpath expr="//field[@name='email_cc']" position="after">
                 <field name="product_id" readonly="1"/>
                 <field name="product_description" readonly="1"/>
             </xpath>
