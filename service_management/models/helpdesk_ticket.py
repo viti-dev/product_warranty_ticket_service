@@ -56,6 +56,29 @@ class HelpdeskTicket(models.Model):
     warranty_start_date = fields.Date(compute="_compute_from_lot", store=True)
     warranty_end_date = fields.Date(compute="_compute_from_lot", store=True)
 
+    @api.depends("lot_id")
+    def _compute_from_lot(self):
+        for rec in self:
+            lot = rec.lot_id
+            if lot:
+                rec.product_id = lot.product_id
+                rec.product_description = lot.product_id.display_name or ""
+                rec.partner_id = lot.customer_id
+                rec.warranty_period = lot.warranty_period or 0
+                rec.warranty_start_date = lot.warranty_start_date
+                rec.warranty_end_date = (
+                    lot.warranty_start_date + relativedelta(months=lot.warranty_period)
+                    if lot.warranty_start_date and lot.warranty_period
+                    else False
+                )
+            else:
+                rec.product_id = False
+                rec.product_description = ""
+                rec.partner_id = False
+                rec.warranty_period = 0
+                rec.warranty_start_date = False
+                rec.warranty_end_date = False
+
     @api.model
     def create(self, vals):
         rec = super().create(vals)
@@ -68,7 +91,7 @@ class HelpdeskTicket(models.Model):
     
     def write(self, vals):
         res = super().write(vals)
-        # self._set_values_from_serial()
+        self._set_values_from_serial()
         if 'stage_id' in vals:
             self._send_stage_notification()
         return res
@@ -88,10 +111,10 @@ class HelpdeskTicket(models.Model):
     #     res = super(HelpdeskTicket, self).write(vals)
         
     #     if 'stage_id' in vals:
-    #         self._send_stage_notification()
+            self._send_stage_notification()
         
     #     return res
-    @api.depends('serial_number')
+
     def _set_values_from_serial(self):
         for rec in self:
             if rec.serial_number:
@@ -100,13 +123,13 @@ class HelpdeskTicket(models.Model):
                     raise UserError(_("Invalid Serial Number entered. Please check again."))
                 if lot:
                     rec.lot_id = lot
-                    rec.product_id = lot.product_id
-                    rec.product_description = lot.product_id.display_name or ""
-                    rec.partner_id = lot.customer_id
-                    if lot.warranty_start_date and lot.warranty_period:
-                        rec.warranty_period = lot.warranty_period
-                        rec.warranty_start_date = lot.warranty_start_date
-                        rec.warranty_end_date = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
+                    # rec.product_id = lot.product_id
+                    # rec.product_description = lot.product_id.display_name or ""
+                    # rec.partner_id = lot.customer_id
+                    # if lot.warranty_start_date and lot.warranty_period:
+                    #     rec.warranty_period = lot.warranty_period
+                    #     rec.warranty_start_date = lot.warranty_start_date
+                    #     rec.warranty_end_date = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
 
     
     # @api.depends("lot_id")
