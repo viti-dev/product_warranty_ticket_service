@@ -3,15 +3,14 @@
     "summary": "Serial-number driven tickets, warranty, SLA reminders, GPS check-in, video call",
     "version": "18.0.1.0",
     "category": "Services/Helpdesk",
-    "author": "ManojThombare",
+    "author": "ITeSolution Team",
     "license": "LGPL-3",
     "depends": [
         "base",
         "helpdesk",
+        "helpdesk_fsm",
         "stock",             
-        "mail", 
-        "project",
-        "contacts",
+        "mail",              
     ],
     "data": [
         
@@ -24,6 +23,8 @@
         "views/helpdesk_ticket_views.xml",
         "views/fsm_order_views.xml",
     ],
-    "application": True,
-    "installable": True,
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+    'license': 'LGPL-3',
 }
