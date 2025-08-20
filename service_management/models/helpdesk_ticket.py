@@ -155,17 +155,17 @@ class CreateTaskInherit(models.TransientModel):
             'context': {
                 'fsm_mode': True,
                 'create': False,
-                'default_ticket_id': self.helpdesk_ticket_id.id,
+                'default_helpdesk_ticket_id': self.helpdesk_ticket_id.id,  # ✅ fixed
             }
         }
 
     def _generate_task_values(self):
         self.ensure_one()
-        ticket_id = self.env.context.get('default_helpdesk_ticket_id') or self.helpdesk_ticket_id.id
         return {
             'name': self.name,
-            'helpdesk_ticket_id': ticket_id,
+            'helpdesk_ticket_id': self.helpdesk_ticket_id.id,
             'project_id': self.project_id.id,
             'partner_id': self.partner_id.id,
             'description': self.helpdesk_ticket_id.description if self.helpdesk_ticket_id else '',
         }
+
