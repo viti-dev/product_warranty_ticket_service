@@ -50,16 +50,16 @@ class HelpdeskTicket(models.Model):
     #                 rec.warranty_end_date = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
 
     lot_id = fields.Many2one("stock.lot", string="Lot", readonly=True)
-    product_id = fields.Many2one("product.product")
-    product_description = fields.Text()
-    warranty_period = fields.Integer()
-    warranty_start_date = fields.Date()
-    warranty_end_date = fields.Date()
+    product_id = fields.Many2one("product.product", compute="_compute_from_lot", store=True)
+    product_description = fields.Text(compute="_compute_from_lot", store=True)
+    warranty_period = fields.Integer(compute="_compute_from_lot", store=True)
+    warranty_start_date = fields.Date(compute="_compute_from_lot", store=True)
+    warranty_end_date = fields.Date(compute="_compute_from_lot", store=True)
 
     @api.model
     def create(self, vals):
         rec = super().create(vals)
-        rec._set_values_from_serial()
+        # rec._set_values_from_serial()
         if ticket.partner_id and ticket.partner_id.email:
             template = self.env.ref("service_management.mail_template_helpdesk_ticket_created")
             template.send_mail(ticket.id, force_send=True)
@@ -68,7 +68,7 @@ class HelpdeskTicket(models.Model):
     
     def write(self, vals):
         res = super().write(vals)
-        self._set_values_from_serial()
+        # self._set_values_from_serial()
         if 'stage_id' in vals:
             self._send_stage_notification()
         return res
