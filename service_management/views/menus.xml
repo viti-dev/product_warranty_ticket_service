@@ -1,20 +1,102 @@
 <odoo>
-<menuitem id="menu_lots_serial" 
-          name="Warranty "
-          parent="helpdesk.menu_helpdesk_root"
-          sequence="12"
-          action="stock.action_production_lot_form"/>
-
 
 <menuitem id="menu_products_root" 
           name="Products"
           parent="helpdesk.menu_helpdesk_root"
           sequence="11"
+          /> 
+<menuitem id="menu_lots_serial_menu1" 
+          name="Warranty "
+          parent="service_management.menu_products_root"
+          sequence="1"
+          action="stock.action_production_lot_form"/>
+
+
+<menuitem id="menu_products_menu2" 
+          name="Products"
+          parent="service_management.menu_products_root"
+          sequence="0"
           action="stock.product_template_action_product"/>      
-<menuitem id="menu_customers_root" 
+<menuitem id="menu_customers_menu3" 
           name="Customers"
-          parent="helpdesk.menu_helpdesk_root"
-          sequence="13"
+          parent="service_management.menu_products_root"
+          sequence="2"
           action="contacts.action_contacts"/>        
-           
+
+
+<menuitem id="menu_field_service" 
+          name="Field Service"
+          parent="helpdesk.menu_helpdesk_root"
+          sequence="12"
+          /> 
+
+ <menuitem id="menu_field_service_menu1" 
+          name="My Tasks"
+          parent="service_management.menu_field_service"
+          sequence="1"
+          /> 
+    <menuitem id="menu_field_service_menusub1" 
+          name="My Tasks"
+          parent="service_management.menu_field_service_menu1"
+          sequence="1"
+          action="industry_fsm.project_task_action_fsm2"/>
+    <menuitem id="menu_field_service_mebusub2" 
+          name="Map"
+          parent="service_management.menu_field_service_menu1"
+          sequence="2"
+          action="industry_fsm.project_task_action_fsm_map2"/>
+
+
+ <menuitem id="menu_field_service_menu2" 
+          name="All Tasks"
+          parent="service_management.menu_field_service"
+          sequence="2"
+          />  
+    <menuitem id="menu_field_service_m1" 
+          name="All Tasks"
+          parent="service_management.menu_field_service_menu2"
+          sequence="1"
+          action="industry_fsm.project_task_action_all_fsm2"/>
+    <menuitem id="menu_field_service_m2" 
+          name="To Schedule"
+          parent="service_management.menu_field_service_menu2"
+          sequence="2"
+          action="industry_fsm.project_task_action_to_schedule_fsm2"/>            
+
+
+ <menuitem id="menu_field_service_menu3" 
+          name="Planning"
+          parent="service_management.menu_field_service"
+          sequence="3"
+           /> 
+    <menuitem id="menu_field_service_submen1" 
+          name="By User"
+          parent="service_management.menu_field_service_menu3"
+          sequence="1"
+          action="industry_fsm.project_task_action_fsm_planning_groupby_user2"/> 
+    <menuitem id="menu_field_service_submen2" 
+          name="By Project"
+          parent="service_management.menu_field_service_menu3"
+          sequence="2"
+          action="industry_fsm.project_task_action_fsm_planning_groupby_project2"/> 
+    <menuitem id="menu_field_service_submen3" 
+          name="By Location"
+          parent="service_management.menu_field_service_menu3"
+          sequence="3"
+          action="industry_fsm.project_task_action_fsm_planning_groupby_location2"/> 
+  <menuitem id="menu_field_service_menu4" 
+          name="Reporting"
+          parent="service_management.menu_field_service"
+          sequence="4"
+          />           
+  <menuitem id="menu_field_service_submenu1" 
+          name="Task Analysis"
+          parent="service_management.menu_field_service_menu4"
+          sequence="1"
+          action="industry_fsm.project_task_user_action_report_fsm"/>
+   <!-- <menuitem id="menu_field_service_menu5" 
+          name="Configuration"
+          parent="service_management.menu_field_service"
+          sequence="5"
+          action="industry_fsm.fsm_menu_settings"/>                                            -->
 </odoo>
