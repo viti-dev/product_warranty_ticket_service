@@ -139,7 +139,7 @@ class HelpdeskTicket(models.Model):
         }
 
 
-class CreateTaskInherit(models.TransientModel):
+class HelpdeskCreateFSMTask(models.TransientModel):
     _inherit = 'helpdesk.create.fsm.task'
 
     def action_generate_and_view_task(self):
@@ -159,13 +159,20 @@ class CreateTaskInherit(models.TransientModel):
             }
         }
 
+    helpdesk_ticket_id = fields.Many2one(
+        'helpdesk.ticket',
+        string="Helpdesk Ticket",
+        readonly=True
+    )
+
     def _generate_task_values(self):
         self.ensure_one()
-        return {
-            'name': self.name,
-            'helpdesk_ticket_id': self.helpdesk_ticket_id.id,
-            'project_id': self.project_id.id,
-            'partner_id': self.partner_id.id,
-            'description': self.helpdesk_ticket_id.description if self.helpdesk_ticket_id else '',
-        }
+        values = super(HelpdeskCreateFSMTask, self)._generate_task_values()
+        # ✅ Force link with the ticket
+        if self.helpdesk_ticket_id:
+            values['helpdesk_ticket_id'] = self.helpdesk_ticket_id.id
+            # Also push description if empty
+            if not values.get("description") and self.helpdesk_ticket_id.description:
+                values['description'] = self.helpdesk_ticket_id.description
+        return values
 
