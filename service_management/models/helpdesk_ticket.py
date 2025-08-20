@@ -1,6 +1,5 @@
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import timedelta
 from odoo.exceptions import UserError
 
@@ -10,16 +9,15 @@ class HelpdeskTicket(models.Model):
 
     # serial_number = fields.Char(
     #     string="Serial Number",
-    #     help="Enter the serial/lot number. Product and warranty details will be auto-filled."
+    #     help="Select the serial/lot. Product and description will be auto-filled."
     # )
     # lot_id = fields.Many2one("stock.lot", string="Lot", readonly=True)
-    # product_id = fields.Many2one("product.product", string="Product", readonly=True)
+    # product_id = fields.Many2one("product.product", string="Product",  readonly=True)
     # product_description = fields.Text(string="Product Description", store=True, readonly=True)
-
+    #
     # warranty_period = fields.Integer(string="Warranty Period (Months)", store=True, readonly=True)
     # warranty_start_date = fields.Date(string="Start Date", store=True, readonly=True)
     # warranty_end_date = fields.Date(string="End Date", store=True, readonly=True)
-
     # partner_id = fields.Many2one("res.partner", related="lot_id.customer_id", store=True, readonly=True)
 
     serial_number = fields.Char("Serial Number")
@@ -32,7 +30,6 @@ class HelpdeskTicket(models.Model):
     warranty_end_date = fields.Date("End Date")
 
     partner_id = fields.Many2one("res.partner", string="Customer")
-
     def _fill_from_serial(self, serial_number):
         """ Helper to fetch lot + warranty info """
         lot = self.env['stock.lot'].search([('name', '=', serial_number)], limit=1)
@@ -64,16 +61,31 @@ class HelpdeskTicket(models.Model):
 
     @api.model
     def create(self, vals):
+        # If serial number is present, update vals before creating
         if vals.get("serial_number"):
             vals.update(self._fill_from_serial(vals["serial_number"]))
-        return super().create(vals)
+
+        ticket = super(HelpdeskTicket, self).create(vals)
+
+        # Send email notification only after ticket creation
+        if ticket.partner_id and ticket.partner_id.email:
+            template = self.env.ref("service_management.mail_template_helpdesk_ticket_created")
+            template.send_mail(ticket.id, force_send=True)
+
+        return ticket
 
     def write(self, vals):
+        # If serial number is present, update vals before writing
         if vals.get("serial_number"):
             vals.update(self._fill_from_serial(vals["serial_number"]))
-        return super().write(vals)
 
-    # ========== SLA Check (CRON) ==========
+        res = super(HelpdeskTicket, self).write(vals)
+
+        if 'stage_id' in vals:
+            self._send_stage_notification()
+
+        return res
+
     def _check_cron_sla(self):
         """Cron to check SLA deadlines and send reminders/escalations"""
         now = fields.Datetime.now()
@@ -99,30 +111,10 @@ class HelpdeskTicket(models.Model):
             if template:
                 template.send_mail(ticket.id, force_send=True)
 
-    # ========== Ticket Creation ==========
-    # def create(self, vals):
-    #     ticket = super(HelpdeskTicket, self).create(vals)
-
-    #     if ticket.partner_id and ticket.partner_id.email:
-    #         template = self.env.ref("service_management.mail_template_helpdesk_ticket_created", raise_if_not_found=False)
-    #         if template:
-    #             template.send_mail(ticket.id, force_send=True)
-    #             print("============================= Email Sent Successfully")
-
-    #     return ticket
-
-    # # ========== Ticket Update ==========
-    # def write(self, vals):
-    #     res = super(HelpdeskTicket, self).write(vals)
-
-    #     if 'stage_id' in vals:
-    #         self._send_stage_notification()
-
-    #     return res
-
     def _send_stage_notification(self):
-        print("================= Stage Change Email Sent")
-        template = self.env.ref('service_management.email_template_service_ticket_stage_changed', raise_if_not_found=False)
+        print("=================Email Sent")
+        template = self.env.ref('service_management.email_template_service_ticket_stage_changed')
         for ticket in self:
-            if template:
-                template.send_mail(ticket.id, force_send=True)
+            template.send_mail(ticket.id, force_send=True)
+
+
