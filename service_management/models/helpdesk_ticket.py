@@ -45,7 +45,7 @@ class HelpdeskTicket(models.Model):
     #                 rec.warranty_start_date = lot.warranty_start_date
     #                 rec.warranty_end_date = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
 
-    lot_id = fields.Many2one("stock.lot", string="Lot", readonly=True)
+    lot_id = fields.Many2one("stock.lot", string="Lot",)
     product_id = fields.Many2one("product.product", compute="_compute_from_lot", store=True)
     product_description = fields.Text(compute="_compute_from_lot", store=True)
     warranty_period = fields.Integer(compute="_compute_from_lot", store=True)
@@ -78,7 +78,7 @@ class HelpdeskTicket(models.Model):
     @api.model
     def create(self, vals):
         ticket = super().create(vals)
-        # rec._set_values_from_serial()
+        ticket._set_values_from_serial()
         if ticket.partner_id and ticket.partner_id.email:
             template = self.env.ref("service_management.mail_template_helpdesk_ticket_created")
             template.send_mail(ticket.id, force_send=True)
@@ -123,8 +123,8 @@ class HelpdeskTicket(models.Model):
                     #     rec.warranty_period = lot.warranty_period
                     #     rec.warranty_start_date = lot.warranty_start_date
                     #     rec.warranty_end_date = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
-    
-    
+
+
     # @api.depends("lot_id")
     # def _compute_from_lot(self):
     #     for rec in self:
@@ -147,11 +147,11 @@ class HelpdeskTicket(models.Model):
     #             rec.warranty_period = 0
     #             rec.warranty_start_date = False
     #             rec.warranty_end_date = False
-    
+
     def _check_cron_sla(self):
         """Cron to check SLA deadlines and send reminders/escalations"""
         now = fields.Datetime.now()
-    
+
         # 1. Reminder: 30 min before SLA deadline
         reminder_tickets = self.search([
             ("sla_deadline", "!=", False),
@@ -162,7 +162,7 @@ class HelpdeskTicket(models.Model):
             template = self.env.ref("service_management.mail_template_sla_reminder", raise_if_not_found=False)
             if template:
                 template.send_mail(ticket.id, force_send=True)
-    
+
         # 2. Escalation: SLA breached (deadline passed 15 min ago)
         escalated_tickets = self.search([
             ("sla_deadline", "!=", False),
@@ -172,8 +172,8 @@ class HelpdeskTicket(models.Model):
             template = self.env.ref("service_management.mail_template_sla_escalation", raise_if_not_found=False)
             if template:
                 template.send_mail(ticket.id, force_send=True)
-    
-    
+
+
     def _send_stage_notification(self):
         print("=================Email Sent")
         template = self.env.ref('service_management.email_template_service_ticket_stage_changed')
