@@ -139,6 +139,8 @@ class HelpdeskTicket(models.Model):
         }
 
 
+from odoo import models, fields, _
+
 class HelpdeskCreateFSMTask(models.TransientModel):
     _inherit = 'helpdesk.create.fsm.task'
 
@@ -155,23 +157,17 @@ class HelpdeskCreateFSMTask(models.TransientModel):
             'context': {
                 'fsm_mode': True,
                 'create': False,
-                'default_helpdesk_ticket_id': self.helpdesk_ticket_id.id,  # ✅ fixed
+                # ✅ use the wizard's helpdesk_ticket_id
+                'default_ticket_id': self.helpdesk_ticket_id.id,
             }
         }
-
-    helpdesk_ticket_id = fields.Many2one(
-        'helpdesk.ticket',
-        string="Helpdesk Ticket",
-        readonly=True
-    )
 
     def _generate_task_values(self):
         self.ensure_one()
         values = super(HelpdeskCreateFSMTask, self)._generate_task_values()
-        # ✅ Force link with the ticket
+        # ✅ Force correct link with Helpdesk Ticket
         if self.helpdesk_ticket_id:
-            values['helpdesk_ticket_id'] = self.helpdesk_ticket_id.id
-            # Also push description if empty
+            values['ticket_id'] = self.helpdesk_ticket_id.id
             if not values.get("description") and self.helpdesk_ticket_id.description:
                 values['description'] = self.helpdesk_ticket_id.description
         return values
