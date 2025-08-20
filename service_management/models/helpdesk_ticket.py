@@ -91,7 +91,7 @@ class HelpdeskTicket(models.Model):
     #         self._send_stage_notification()
         
     #     return res
-    
+    @api.depends('serial_number')
     def _set_values_from_serial(self):
         for rec in self:
             if rec.serial_number:
