@@ -117,17 +117,34 @@ class HelpdeskTicket(models.Model):
         for ticket in self:
             template.send_mail(ticket.id, force_send=True)
 
+    def action_generate_fsm_task(self):
+        self.ensure_one()
+        if not self.partner_id and (self.partner_name or self.partner_email):
+            self.partner_id = self._find_or_create_partner(self.partner_name, self.partner_email, self.company_id.id)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Create a Field Service task'),
+            'res_model': 'helpdesk.create.fsm.task',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'use_fsm': True,
+                'default_helpdesk_ticket_id': self.id,
+                'default_user_id': False,
+                'default_partner_id': self.partner_id.id,
+                'default_name': self.name,
+                'default_project_id': self.team_id.sudo().fsm_project_id.id,
+                'dialog_size': 'medium',
+            }
+        }
+
+
 class CreateTaskInherit(models.TransientModel):
     _inherit = 'helpdesk.create.fsm.task'
 
     def action_generate_and_view_task(self):
         self.ensure_one()
         new_task = self.action_generate_task()
-
-        # Explicitly set helpdesk_ticket_id on task (if not already set)
-        if self.helpdesk_ticket_id and not new_task.helpdesk_ticket_id:
-            new_task.helpdesk_ticket_id = self.helpdesk_ticket_id.id
-
         return {
             'type': 'ir.actions.act_window',
             'name': _('Tasks from Tickets'),
@@ -140,4 +157,15 @@ class CreateTaskInherit(models.TransientModel):
                 'create': False,
                 'default_ticket_id': self.helpdesk_ticket_id.id,
             }
+        }
+
+    def _generate_task_values(self):
+        self.ensure_one()
+        ticket_id = self.env.context.get('default_helpdesk_ticket_id') or self.helpdesk_ticket_id.id
+        return {
+            'name': self.name,
+            'helpdesk_ticket_id': ticket_id,
+            'project_id': self.project_id.id,
+            'partner_id': self.partner_id.id,
+            'description': self.helpdesk_ticket_id.description if self.helpdesk_ticket_id else '',
         }
