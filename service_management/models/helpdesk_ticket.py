@@ -1,3 +1,4 @@
+
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
 from datetime import timedelta
@@ -137,8 +138,6 @@ class CreateTaskInherit(models.TransientModel):
             'context': {
                 'fsm_mode': True,
                 'create': False,
-                'default_helpdesk_ticket_id': self.helpdesk_ticket_id.id,  # ensure ticket prefilled if duplicate task
+                'default_ticket_id': self.helpdesk_ticket_id.id,
             }
         }
-
-
