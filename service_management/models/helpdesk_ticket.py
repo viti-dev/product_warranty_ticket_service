@@ -10,10 +10,10 @@ class HelpdeskTicket(models.Model):
 
     
 
-    # serial_number = fields.Char(
-    #     string="Serial Number",
-    #     help="Select the serial/lot. Product and description will be auto-filled."
-    # )
+    serial_number = fields.Char(
+        string="Serial Number",
+        help="Select the serial/lot. Product and description will be auto-filled."
+    )
     # lot_id = fields.Many2one("stock.lot", string="Lot", readonly=True)
     # product_id = fields.Many2one("product.product", string="Product",  readonly=True)
     # product_description = fields.Text(string="Product Description", store=True, readonly=True)
