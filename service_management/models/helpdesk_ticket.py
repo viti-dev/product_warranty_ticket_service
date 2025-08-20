@@ -30,58 +30,62 @@ class HelpdeskTicket(models.Model):
     warranty_end_date = fields.Date("End Date")
 
     partner_id = fields.Many2one("res.partner", string="Customer")
+
     def _fill_from_serial(self, serial_number):
-        """ Helper to fetch lot + warranty info """
-        lot = self.env['stock.lot'].search([('name', '=', serial_number)], limit=1)
+        """Helper: fetch lot and related data by serial, or reset if empty"""
+        if not serial_number:
+            # Clear all related fields if serial number removed
+            return {
+                "lot_id": False,
+                "product_id": False,
+                "product_description": False,
+                "warranty_period": False,
+                "warranty_start_date": False,
+                "warranty_end_date": False,
+                "partner_id": False,
+            }
+
+        lot = self.env["stock.lot"].search([("name", "=", serial_number)], limit=1)
         if not lot:
-            raise UserError(_("Invalid Serial Number entered."))
+            raise UserError(_("Invalid Serial Number entered. Please check again."))
 
-        # Restrict: only own customer lots
-        if lot.customer_id and self.partner_id and lot.customer_id.id != self.partner_id.id:
-            raise UserError(_(
-                "This Serial Number belongs to another customer: %s"
-            ) % lot.customer_id.display_name)
+        # Restrict: user can only create ticket for his own product
+        if lot.customer_id and self.env.user.partner_id != lot.customer_id:
+            raise UserError(_("You cannot create a ticket for another customer's product."))
 
-        values = {
+        return {
             "lot_id": lot.id,
             "product_id": lot.product_id.id,
             "product_description": lot.product_id.display_name,
-            "partner_id": lot.customer_id.id if lot.customer_id else False,
             "warranty_period": lot.warranty_period,
             "warranty_start_date": lot.warranty_start_date,
+            "warranty_end_date": lot.warranty_start_date + relativedelta(months=lot.warranty_period)
+            if lot.warranty_start_date and lot.warranty_period else False,
+            "partner_id": lot.customer_id.id if lot.customer_id else False,
         }
-        if lot.warranty_start_date:
-            values["warranty_end_date"] = lot.warranty_start_date + relativedelta(months=lot.warranty_period)
-        return values
-
-    @api.onchange('serial_number')
-    def _onchange_serial_number(self):
-        if self.serial_number:
-            self.update(self._fill_from_serial(self.serial_number))
 
     @api.model
     def create(self, vals):
-        # If serial number is present, update vals before creating
-        if vals.get("serial_number"):
-            vals.update(self._fill_from_serial(vals["serial_number"]))
+        if "serial_number" in vals:  # even if False
+            vals.update(self._fill_from_serial(vals.get("serial_number")))
 
-        ticket = super(HelpdeskTicket, self).create(vals)
+        ticket = super().create(vals)
 
-        # Send email notification only after ticket creation
         if ticket.partner_id and ticket.partner_id.email:
-            template = self.env.ref("service_management.mail_template_helpdesk_ticket_created")
-            template.send_mail(ticket.id, force_send=True)
+            template = self.env.ref("service_management.mail_template_helpdesk_ticket_created",
+                                    raise_if_not_found=False)
+            if template:
+                template.send_mail(ticket.id, force_send=True)
 
         return ticket
 
     def write(self, vals):
-        # If serial number is present, update vals before writing
-        if vals.get("serial_number"):
-            vals.update(self._fill_from_serial(vals["serial_number"]))
+        if "serial_number" in vals:  # even if False
+            vals.update(self._fill_from_serial(vals.get("serial_number")))
 
-        res = super(HelpdeskTicket, self).write(vals)
+        res = super().write(vals)
 
-        if 'stage_id' in vals:
+        if "stage_id" in vals:
             self._send_stage_notification()
 
         return res
