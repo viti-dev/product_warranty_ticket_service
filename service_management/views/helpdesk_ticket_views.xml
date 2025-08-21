@@ -56,4 +56,14 @@
       </xpath> -->
         </field>
     </record>
+    <record id="view_helpdesk_quick_create_inherit" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.quick.create.inherit</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.quick_create_ticket_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="serial_number" placeholder="Enter Serial Number"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
