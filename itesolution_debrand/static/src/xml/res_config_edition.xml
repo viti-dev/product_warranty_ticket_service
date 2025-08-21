@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    <div t-name='res_config_edition'>
+        <div class="col-12 o_setting_box" id="edition">
+            <div class="o_setting_right_pane">
+                <div class="user-heading">
+                    <h3>
+                        ITeSolution Software Services <t t-esc="widget.server_version"/> (ITeSolution Software Services Professional Edition)
+                    </h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Extend the main settings form view -->
+        <record id="res_config_settings_view_form_inh_rebrand" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inh.itesolution</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Add ITeSolution Settings After Languages -->
+                <xpath expr="//div[@id='languages']" position="after">
+                    <div id="odoo_rebrand">
+                        <h2 class="mt32 mb16">ITeSolution Software Services – Custom Settings</h2>
+                        <div class="row mt16 o_settings_container" name="rebrand_setting_container">
+                            <div class="col-12 col-md-6 o_setting_box" id="rebrand_setting">
+                                <div class="o_setting_left_pane">
+                                    <span class="fa fa-cogs fa-2x text-primary"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label for="odoo_tittle_name" string="Title"/>
+                                    <div class="mb-2">
+                                        <field name="odoo_tittle_name" placeholder="Enter custom title"/>
+                                    </div>
+
+                                    <label for="odoo_website_url" string="Website URL"/>
+                                    <div class="mb-2">
+                                        <field name="odoo_website_url" placeholder="https://www.itesolution.co.in"/>
+                                    </div>
+
+                                    <label for="show_login_powered_by" string="Show 'Powered by' on Login Page"/>
+                                    <div class="mb-2">
+                                        <field name="show_login_powered_by"/>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <a href="https://www.itesolution.co.in" target="_blank">
+                                            Visit our website for more information.
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+
+                <!-- Replace "About" section with ITeSolution brand text -->
+                <xpath expr="//div[@id='about']" position="replace">
+                    <div id="about">
+                        <h3>ITeSolution Software Services</h3>
+                    </div>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

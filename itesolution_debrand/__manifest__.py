@@ -1,0 +1,47 @@
+{
+    "name": "Backend Rebranding logo url",
+    'version': '18.0.0.1',
+    'summary': 'Manage salary benchmarking data by role, industry, experience',
+    'description': """""",
+    'category': 'Tools',
+    'author': 'ITeSolution Team',
+    'maintainer': 'ITeSolution Software Services',
+    'company': 'ITeSolution Software Services',
+    'website': 'https://www.itesolution.co.in',
+    'price': 15.0,
+    'currency': 'USD',
+    "depends": [
+        "base",
+        "base_setup",
+        "web",
+        "mail",
+        "mail_bot",
+        "portal"
+    ],
+    "sequence": -89,
+    "data": [
+        'views/templates.xml',
+        'views/login_template.xml',
+        'views/res_config_settings_views.xml',
+        'views/res_partner_views.xml',
+        'data/ir_config_parameter_data.xml',
+    ],
+    'assets': {
+        'web.assets_backend': [
+            'itesolution_debrand/static/src/js/webclient.js',
+            'itesolution_debrand/static/src/js/user_menu.js',
+            'itesolution_debrand/static/src/js/dialog.js',
+            'itesolution_debrand/static/src/js/error_dialogs.js',
+        ],
+        'web.assets_qweb': [
+            ('replace', 'base_setup/static/src/xml/res_config_edition.xml', 'itesolution_debrand/static/src/xml/res_config_edition.xml'),
+            ('replace', 'web/static/src/core/errors/error_dialogs.xml', 'itesolution_debrand/static/src/xml/error_dialogs.xml'),
+            ('replace', 'mail/static/src/components/notification_alert/notification_alert.xml', 'itesolution_debrand/static/src/xml/notification_alert.xml'),
+        ],
+    },
+    'images': ['static/description/banner.png'],
+    'installable': True,
+    'auto_install': False,
+    'application': True,
+    'license': 'LGPL-3',
+}

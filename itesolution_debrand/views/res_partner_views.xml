@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_partner_form_inh_debrand" model="ir.ui.view">
+        <field name="name">view.partner.form.inh.debrand</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="website" position="attributes">
+                <attribute name="placeholder">e.g. "https://www.itesolution.co.in"</attribute>
+            </field>
+        </field>
+    </record>
+
+</odoo>
