@@ -6,7 +6,7 @@
             <field name="name">Helpdesk Ticket Created</field>
             <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
             <field name="subject">Ticket {{object.name}} Created</field>
-            <field name="email_from">{{user.email}}</field>
+            <field name="email_from">{{object.company_id.email}}</field>
             <field name="email_to">{{object.partner_id.email}}</field>
             <field name="body_html" type="html">
                
@@ -28,7 +28,7 @@
             <field name="name">Service Ticket Stage Changed</field>
             <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
             <field name="subject">Service Ticket {{object.name}} Status Update</field>
-            <field name="email_from">{{user.email}}</field>
+            <field name="email_from">{{object.company_id.email}}</field>
             <field name="email_to">{{object.partner_id.email}}</field>
             <field name="body_html" type="html">
               
@@ -52,7 +52,7 @@
         <field name="name">SLA Reminder - Helpdesk Ticket</field>
         <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
         <field name="subject">Reminder: Ticket {{object.name}} SLA Deadline Approaching</field>
-        <field name="email_from">{{user.email}}</field>
+        <field name="email_from">{{object.company_id.email}}</field>
         <field name="email_to">{{object.partner_id.email}}</field>
         <field name="body_html" type="html">
         <div>
@@ -71,7 +71,7 @@
         <field name="name">SLA Escalation - Helpdesk Ticket</field>
         <field name="model_id" ref="helpdesk.model_helpdesk_ticket"/>
         <field name="subject">Escalation: Ticket {{object.name}} SLA Breached</field>
-        <field name="email_from">{{user.email}}</field>
+        <field name="email_from">{{object.company_id.email}}</field>
         <field name="email_to">{{object.partner_id.email}}</field>
         <field name="body_html" type="html">
           <div>
